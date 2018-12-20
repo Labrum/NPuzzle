@@ -8,7 +8,7 @@ public class AStarComparator implements Comparator<SearchNode> {
 		
 		if(arg0.cost>arg1.cost){
 			return 1;
-		} else if (arg0.cost == arg1.cost){
+		}else if(arg0.cost == arg1.cost){
 			return 0;
 		}
 		

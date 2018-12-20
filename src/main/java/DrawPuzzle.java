@@ -25,7 +25,7 @@ public class DrawPuzzle {
         Stack<SearchNode> path = astar.search(new SearchNode(board));
 
         TOTAL_PATH_LENGTH = (double)path.size();
-        HEURISTIC_STARTING_POINT = astar.calcManhattanDistance(board)+4;
+        HEURISTIC_STARTING_POINT = Solver.calcManhattanDistance(board)+4;
         System.out.println ("Path found length : " + path.size() );
 
         while (!path.empty()) {
@@ -51,7 +51,7 @@ public class DrawPuzzle {
         }
     }
 
-    public JPanel boardEvaluation(Board board, int depth, SearchNode node) {
+    public JPanel boardEvaluation(final Board board, final int depth, final SearchNode node) {
         return new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -71,7 +71,7 @@ public class DrawPuzzle {
     private void drawEvaluationRect(Graphics g, Board board, int depth) {
 
         double maxManhattanDist = (double) HEURISTIC_STARTING_POINT;
-        int manhattanDist = astar.calcManhattanDistance(board);
+        int manhattanDist = Solver.calcManhattanDistance(board);
 
         System.out.println(manhattanDist+" / "+maxManhattanDist);
         int redValue = (int) ((manhattanDist/maxManhattanDist) * (255));
@@ -102,7 +102,7 @@ public class DrawPuzzle {
     }
 
     private void drawTileText(Graphics g, Board board) {
-        Font newFont = Font.getFont(Font.SANS_SERIF);
+        Font newFont = new Font("Verdana", Font.BOLD, 12);
         g.setFont(newFont);
         for (int i = 0; i < board.N; i++) {
             for (int j = 0; j < board.N; j++){
@@ -114,7 +114,7 @@ public class DrawPuzzle {
         }
     }
 
-    public JPanel drawBoard(Board board){
+    public JPanel drawBoard(final Board board){
         return new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {

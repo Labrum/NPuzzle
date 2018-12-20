@@ -1,9 +1,7 @@
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Stack;
-
 
 public class SMAStar {
 	private SearchNode root;
@@ -71,37 +69,7 @@ public class SMAStar {
 		if(iterative && (node.cost > MAX_COST)){
 			return successors;
 		}
-		
-		
-		for (int i = 0; i < 4; i++) {
-			Board child = node.state.copyBoard();
-			if (child.move(Directions.values()[i])) {
-				SearchNode childNode = new SearchNode(child, node, 0,
-						calcManhattanDistance(child) + node.depth + 1);
-				successors.add(childNode);
-			}
-		}
-		
-		return successors;
-	}
 
-	public static void main(String[] args) {
-		
-	}
-	private static int calcManhattanDistance(Board board){
-		int sum = 0;
-		
-		for(int i = 0; i < board.N; i++){
-			for(int j = 0; j < board.N; j++){
-				int tile = board.getTile(i, j);
-
-				if(tile != -1){	
-					sum += (int) Math.abs((tile-1)/board.N - j);
-					sum += (int) Math.abs((tile-1)%board.N - i);
-				}
-			}
-		}
-		
-		return sum;		
+		return Solver.generateSuccessors(node);
 	}
 }

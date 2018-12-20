@@ -4,7 +4,7 @@ import java.util.Queue;
 import java.util.Stack;
 
 
-public class FringeSearch extends Solver {
+public class FringeSearch extends FringeSolver {
 	private PriorityQueue<SearchNode> fringe = new PriorityQueue<SearchNode>(
 			100, new AStarComparator());
 	private PriorityQueue<SearchNode> later = new PriorityQueue<SearchNode>(
@@ -21,7 +21,7 @@ public class FringeSearch extends Solver {
 		Stack<SearchNode> path = null;
 		fringe.add(root);
 		while (!found) {
-			path = searchToDepth(cutoff);
+			path = searchToDepth(fringe, cutoff);
 			if (path == null) {
 				cutoff = largerThanCutoff;
 				fringe = later;
@@ -31,22 +31,6 @@ public class FringeSearch extends Solver {
 			}
 		}
 		return path;
-	}
-
-	public Stack<SearchNode> searchToDepth(double MAX_COST) {
-
-		while (true) {
-			if (fringe.size() == 0) {
-				return null;
-			}
-
-			SearchNode node = fringe.poll();
-
-			if (goalTest(node)) {
-				return node.getPath();
-			}
-			fringe.addAll(expand(node, MAX_COST));
-		}
 	}
 
 	public Queue expand(SearchNode node, double MAX_COST) {
@@ -60,11 +44,11 @@ public class FringeSearch extends Solver {
 			return successors;
 		}
 
-		for (int i = 0; i < 4; i++) {
+		for (Directions direction : Directions.values()) {
 			Board child = node.state.copyBoard();
-			if (child.move(Directions.values()[i])) {
+			if (child.move(direction)) {
 				SearchNode childNode = new SearchNode(child, node, 0,
-						calcManhattanDistance(child) + node.depth + 1);
+						Solver.calcManhattanDistance(child) + node.depth + 1);
 				if (childNode.cost <= MAX_COST) {
 					successors.add(childNode);
 				} else {

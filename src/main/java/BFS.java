@@ -3,7 +3,7 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Stack;
 
-public class BFS extends Solver{
+public class BFS implements Solver{
 
 	private PriorityQueue<SearchNode> fringe = new PriorityQueue<SearchNode>(100,new Fifo());
 
@@ -20,7 +20,7 @@ public class BFS extends Solver{
 
 			SearchNode node = fringe.poll();
 
-			if (goalTest(node)) {
+			if (Solver.goalTest(node)) {
 				return node.getPath();
 			}
 			fringe.addAll(expand(node));

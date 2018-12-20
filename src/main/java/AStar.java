@@ -1,10 +1,9 @@
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Stack;
 
-public class AStar extends Solver {
+public class AStar implements Solver {
 
 	private PriorityQueue<SearchNode> openList = new PriorityQueue<SearchNode>(
 			100, new AStarComparator());
@@ -16,14 +15,14 @@ public class AStar extends Solver {
 
 	public Stack<SearchNode> search(SearchNode root) {
 		// Root added with only manhattan distance to goal
-		root.cost = calcManhattanDistance(root.state);
+		root.cost = Solver.calcManhattanDistance(root.state);
 		openList.add(root);
 		while (!openList.isEmpty()) {
 			SearchNode current = openList.poll();
-			if (goalTest(current)) {
+			if (Solver.goalTest(current)) {
 				return current.getPath();
 			}
-			Queue<SearchNode> successors = generateSuccessors(current);
+			Queue<SearchNode> successors = Solver.generateSuccessors(current);
 
 			for (SearchNode successor : successors) {
 				if (closedList.contains(successor)) {
@@ -41,21 +40,5 @@ public class AStar extends Solver {
 		}
 
 		return null;
-	}
-
-	private Queue<SearchNode> generateSuccessors(SearchNode node) {
-
-		LinkedList<SearchNode> successors = new LinkedList<SearchNode>();
-	
-		for (int i = 0; i < 4; i++) {
-			Board child = node.state.copyBoard();
-			if (child.move(Directions.values()[i])) {
-				SearchNode childNode = new SearchNode(child, node, 0,
-						calcManhattanDistance(child) + node.depth + 1);
-				successors.add(childNode);
-			}
-		}
-
-		return successors;
 	}
 }

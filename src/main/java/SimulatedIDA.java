@@ -1,12 +1,10 @@
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Stack;
-import java.util.TreeSet;
 
-public class SimulatedIDA {
+public class SimulatedIDA extends FringeSolver {
 	private SearchNode root;
 	private PriorityQueue<SearchNode> fringe = new PriorityQueue<SearchNode>(100,
 			new AStarComparator());
@@ -19,12 +17,13 @@ public class SimulatedIDA {
 		this.iterative = iterative;
 	}
 
-	public Stack<SearchNode> search() {
+	public Stack<SearchNode> search(SearchNode root) {
 		boolean found = false;
 		double cutoff = 0;
 		Stack<SearchNode> path = null;
+		fringe.add(root);
 		while (!found) {
-			path = searchToDepth(cutoff);
+			path = searchToDepth(fringe, cutoff);
 			if (path == null) {
 				cutoff = largerThanCutoff;
 			} else {
@@ -35,78 +34,26 @@ public class SimulatedIDA {
 		return path;
 	}
 
-	public Stack<SearchNode> searchToDepth(double MAX_COST) {
-
-		fringe.add(root);
-
-		while (true) {
-			if (fringe.size() == 0) {
-				return null;
-			}
-
-			SearchNode node = fringe.poll();
-
-			if (goalTest(node)) {
-				return node.getPath();
-			}
-			fringe.addAll(expand(node, MAX_COST));
-		}
-	}
-
-	public boolean goalTest(SearchNode test) {
-		boolean goal = true;
-		for (int j = 0; j < test.state.N; j++) {
-			for (int i = 0; i < test.state.N; i++) {
-				if (test.state.getTile(i, j) != j * test.state.N + i) {
-					if (i != 0 || j != 0) {
-						goal = false;
-					}
-				}
-			}
-		}
-
-		return goal;
-
-	}
-
-	public Queue expand(SearchNode node, double MAX_COST) {
-
+	@Override
+	public Queue<SearchNode> expand(SearchNode node, double MAX_COST) {
 		LinkedList<SearchNode> successors = new LinkedList<SearchNode>();
 		if (iterative && (node.cost > MAX_COST)) {
 			largerThanCutoff = node.cost;
 			return successors;
 		}
-		
-		for (int i = 0; i < 4; i++) {
+
+		for (Directions direction : Directions.values()) {
 			Board child = node.state.copyBoard();
-			if (child.move(Directions.values()[i])) {
+			if (child.move(direction)) {
 				SearchNode childNode = new SearchNode(child, node, 0,
-						calcManhattanDistance(child) + node.depth + 1);
+						Solver.calcManhattanDistance(child) + node.depth + 1);
 				if(!closedList.contains(childNode)){
 					successors.add(childNode);
 				}
 			}
 		}
-		
+
 		closedList.add(node);
 		return successors;
 	}
-
-	private static int calcManhattanDistance(Board board) {
-		int sum = 0;
-
-		for (int i = 0; i < board.N; i++) {
-			for (int j = 0; j < board.N; j++) {
-				int tile = board.getTile(i, j);
-
-				if (tile != -1) {
-					sum += (int) Math.abs((tile) / board.N - j);
-					sum += (int) Math.abs((tile) % board.N - i);
-				}
-			}
-		}
-
-		return sum;
-	}
-
 }

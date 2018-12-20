@@ -1,12 +1,12 @@
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Stack;
 
-public abstract class Solver{
+public interface Solver{
 
-    public Stack<SearchNode> search(SearchNode root){
-        return new Stack<>();
-    }
+    Stack<SearchNode> search(SearchNode root);
 
-    public boolean goalTest(SearchNode test) {
+    static boolean goalTest(SearchNode test) {
         boolean goal = true;
         for (int j = 0; j < test.state.N; j++) {
             for (int i = 0; i < test.state.N; i++) {
@@ -21,7 +21,23 @@ public abstract class Solver{
         return goal;
     }
 
-    public int calcManhattanDistance(Board board) {
+    static Queue<SearchNode> generateSuccessors(SearchNode node) {
+
+        LinkedList<SearchNode> successors = new LinkedList<SearchNode>();
+
+        for (Directions direction : Directions.values()) {
+            Board child = node.state.copyBoard();
+            if (child.move(direction)) {
+                SearchNode childNode = new SearchNode(child, node, 0,
+                        Solver.calcManhattanDistance(child) + node.depth + 1);
+                successors.add(childNode);
+            }
+        }
+
+        return successors;
+    }
+
+    static int calcManhattanDistance(Board board) {
         int sum = 0;
 
         for (int i = 0; i < board.N; i++) {

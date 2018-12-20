@@ -44,7 +44,7 @@ public class SearchNode {
 		return false;
 	}
 	
-	public int hashCode() {
+	 public int hashCode() {
 	    return java.util.Arrays.deepHashCode( state.board );
 	}
 	

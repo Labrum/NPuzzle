@@ -78,7 +78,7 @@ public class NPuzzle {
 		case 5:
 			SimulatedIDA simIDA = new SimulatedIDA(root, true);
 			startTime = System.nanoTime();
-			path = simIDA.search();
+			path = simIDA.search(root);
 			endTime = System.nanoTime();
 			break;
 		case 6:
@@ -107,5 +107,4 @@ public class NPuzzle {
 			}
 		}
 	}
-
 }
